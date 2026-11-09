@@ -1,0 +1,32 @@
+name: Deploy Laravel to cPanel via SSH
+
+on:
+  push:
+    branches:
+      - main # main ব্র্যাঞ্চে push বা merge হলে কাজ করবে
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Execute Deployment Commands via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /home/${{ secrets.SSH_USERNAME }}/shakhawat.digigo.click
+          git pull origin main
+          composer install --no-dev --optimize-autoloader
+          php artisan migrate:fresh --seed
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          rm -rf public/storage
+          php artisan storage:link
+          php artisan optimize:clear
