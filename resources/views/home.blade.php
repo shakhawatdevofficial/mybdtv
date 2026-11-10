@@ -72,9 +72,22 @@
 
             <!-- Right: Action Buttons -->
             <div class="flex items-center gap-3 sm:gap-4">
-                <a href="{{ Route::has('customer.login') ? route('customer.login') : '#signin' }}" class="hidden sm:inline-flex px-6 py-2 text-sm font-bold text-red-600 border border-red-500 rounded-full hover:bg-red-50/70 transition-all duration-200">
-                    Sign In
-                </a>
+                @auth
+                    <span class="hidden sm:inline-flex text-xs font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-full">
+                        Hi, {{ Auth::user()->name }}
+                    </span>
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="hidden sm:inline-flex px-5 py-2 text-sm font-bold text-red-600 border border-red-500 rounded-full hover:bg-red-50/70 transition-all duration-200 cursor-pointer">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="hidden sm:inline-flex px-6 py-2 text-sm font-bold text-red-600 border border-red-500 rounded-full hover:bg-red-50/70 transition-all duration-200">
+                        Sign In
+                    </a>
+                @endauth
+
                 <a href="#pricing" class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 rounded-full shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/40 transition-all duration-200">
                     Get Started
                 </a>
@@ -97,7 +110,14 @@
             <a href="#apps" class="block px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 font-medium">Apps</a>
             <a href="#contact" class="block px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 font-medium">Contact</a>
             <div class="pt-3 border-t border-slate-100">
-                <a href="{{ Route::has('customer.login') ? route('customer.login') : '#signin' }}" class="block text-center py-2.5 text-sm font-bold text-red-600 border border-red-500 rounded-full">Sign In</a>
+                @auth
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full text-center py-2.5 text-sm font-bold text-red-600 border border-red-500 rounded-full cursor-pointer">Logout</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="block text-center py-2.5 text-sm font-bold text-red-600 border border-red-500 rounded-full">Sign In</a>
+                @endauth
             </div>
         </div>
     </header>
